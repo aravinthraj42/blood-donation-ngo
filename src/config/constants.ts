@@ -1,0 +1,115 @@
+export const APP_NAME = "LifeBlood Foundation";
+export const APP_DESCRIPTION = "Connecting donors with those in need. Save lives through blood donation.";
+
+export const BLOOD_GROUPS = [
+  { name: "A_POSITIVE", displayName: "A+" },
+  { name: "A_NEGATIVE", displayName: "A-" },
+  { name: "B_POSITIVE", displayName: "B+" },
+  { name: "B_NEGATIVE", displayName: "B-" },
+  { name: "O_POSITIVE", displayName: "O+" },
+  { name: "O_NEGATIVE", displayName: "O-" },
+  { name: "AB_POSITIVE", displayName: "AB+" },
+  { name: "AB_NEGATIVE", displayName: "AB-" },
+] as const;
+
+export const DONOR_STATUS = {
+  PENDING: "PENDING",
+  ACTIVE: "ACTIVE",
+  INACTIVE: "INACTIVE",
+  DEACTIVATED: "DEACTIVATED",
+} as const;
+
+export const VERIFICATION_STATUS = {
+  UNVERIFIED: "UNVERIFIED",
+  VERIFIED: "VERIFIED",
+} as const;
+
+export const REQUEST_STATUS = {
+  PENDING: "PENDING",
+  CONTACTED: "CONTACTED",
+  IN_PROGRESS: "IN_PROGRESS",
+  FULFILLED: "FULFILLED",
+  CANCELLED: "CANCELLED",
+} as const;
+
+export const URGENCY_LEVEL = {
+  NORMAL: "NORMAL",
+  URGENT: "URGENT",
+  EMERGENCY: "EMERGENCY",
+} as const;
+
+export const CONTENT_CATEGORY = {
+  DOCTOR_MESSAGE: "DOCTOR_MESSAGE",
+  BLOOD_DONATION: "BLOOD_DONATION",
+  HEALTHCARE: "HEALTHCARE",
+  AWARENESS: "AWARENESS",
+  QUOTE: "QUOTE",
+  ANNOUNCEMENT: "ANNOUNCEMENT",
+} as const;
+
+export const CONTENT_STATUS = {
+  DRAFT: "DRAFT",
+  PUBLISHED: "PUBLISHED",
+  ARCHIVED: "ARCHIVED",
+} as const;
+
+export const CONTACT_METHOD = {
+  PHONE: "PHONE",
+  WHATSAPP: "WHATSAPP",
+  EMAIL: "EMAIL",
+} as const;
+
+export const ADMIN_ROLE = {
+  SUPER_ADMIN: "SUPER_ADMIN",
+  ADMIN: "ADMIN",
+} as const;
+
+export const NOTIFICATION_TYPE = {
+  NEW_DONOR: "NEW_DONOR",
+  NEW_BLOOD_REQUEST: "NEW_BLOOD_REQUEST",
+  URGENT_BLOOD_REQUEST: "URGENT_BLOOD_REQUEST",
+  DONOR_UPDATED: "DONOR_UPDATED",
+  REQUEST_STATUS_CHANGED: "REQUEST_STATUS_CHANGED",
+  CONTENT_PUBLISHED: "CONTENT_PUBLISHED",
+} as const;
+
+export const AUDIT_ACTION = {
+  ADMIN_LOGIN: "ADMIN_LOGIN",
+  DONOR_CREATED: "DONOR_CREATED",
+  DONOR_UPDATED: "DONOR_UPDATED",
+  DONOR_VERIFIED: "DONOR_VERIFIED",
+  DONOR_DEACTIVATED: "DONOR_DEACTIVATED",
+  DONOR_ACTIVATED: "DONOR_ACTIVATED",
+  REQUEST_CREATED: "REQUEST_CREATED",
+  REQUEST_UPDATED: "REQUEST_UPDATED",
+  REQUEST_STATUS_CHANGED: "REQUEST_STATUS_CHANGED",
+  CONTENT_CREATED: "CONTENT_CREATED",
+  CONTENT_UPDATED: "CONTENT_UPDATED",
+  CONTENT_PUBLISHED: "CONTENT_PUBLISHED",
+  CONTENT_DELETED: "CONTENT_DELETED",
+  ADMIN_CREATED: "ADMIN_CREATED",
+  ADMIN_ROLE_CHANGED: "ADMIN_ROLE_CHANGED",
+  ADMIN_DEACTIVATED: "ADMIN_DEACTIVATED",
+  SETTINGS_UPDATED: "SETTINGS_UPDATED",
+} as const;
+
+export const DEFAULT_SETTINGS = {
+  NGO_NAME: "LifeBlood Foundation",
+  NGO_DESCRIPTION: "A non-profit organization dedicated to saving lives through blood donation awareness and connecting donors with those in need.",
+  NGO_LOGO: "",
+  CONTACT_PHONE: "+91 1234567890",
+  CONTACT_EMAIL: "contact@lifeblood.org",
+  ADDRESS: "123 Healthcare Avenue",
+  CITY: "Mumbai",
+  STATE: "Maharashtra",
+  SOCIAL_FACEBOOK: "",
+  SOCIAL_TWITTER: "",
+  SOCIAL_INSTAGRAM: "",
+  DONATION_ELIGIBILITY_INTERVAL_DAYS: "90",
+  PUBLIC_BLOOD_AVAILABILITY_ENABLED: "true",
+} as const;
+
+export const PAGINATION = {
+  DEFAULT_PAGE_SIZE: 10,
+  PAGE_SIZE_OPTIONS: [10, 25, 50, 100],
+} as const;
