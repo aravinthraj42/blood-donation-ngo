@@ -5,9 +5,9 @@ import { ContentSection } from "@/components/public/content-section";
 import { getPublicBloodAvailability, getPublishedContent } from "@/services/public";
 
 export const metadata: Metadata = {
-  title: "LifeBlood Foundation - Donate Blood, Save Lives",
+  title: "Blood Connect - Donate Blood, Save Lives",
   description:
-    "Join LifeBlood Foundation in our mission to save lives through blood donation. Register as a donor, request blood, and learn about the importance of blood donation.",
+    "Join Blood Connect – InfoPark News Initiate, Kochi in our mission to save lives through blood donation. Register as a donor, request blood, and learn about the importance of blood donation.",
 };
 
 export const dynamic = 'force-dynamic';

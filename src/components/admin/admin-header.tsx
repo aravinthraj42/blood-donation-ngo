@@ -86,7 +86,7 @@ export function AdminHeader({ admin }: AdminHeaderProps) {
                   <Heart className="w-5 h-5 text-white" fill="currentColor" />
                 </div>
                 <div>
-                  <span className="font-semibold text-gray-900">LifeBlood</span>
+                  <span className="font-semibold text-gray-900">Blood Connect</span>
                   <span className="text-xs text-gray-500 block">Admin Panel</span>
                 </div>
               </div>
@@ -133,7 +133,7 @@ export function AdminHeader({ admin }: AdminHeaderProps) {
           <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
             <Heart className="w-5 h-5 text-white" fill="currentColor" />
           </div>
-          <span className="font-semibold text-gray-900">LifeBlood</span>
+          <span className="font-semibold text-gray-900">Blood Connect</span>
         </div>
 
         {/* Spacer for desktop */}

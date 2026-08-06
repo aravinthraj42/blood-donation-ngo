@@ -2,8 +2,8 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | Admin - LifeBlood Foundation",
-    default: "Admin Dashboard | LifeBlood Foundation",
+    template: "%s | Admin - Blood Connect",
+    default: "Admin Dashboard | Blood Connect",
   },
   description: "Admin dashboard for managing blood donations",
   robots: {

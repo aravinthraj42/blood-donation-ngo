@@ -16,7 +16,7 @@ import {
 export const metadata: Metadata = {
   title: "Health Awareness",
   description:
-    "Stay informed with healthcare tips, doctor messages, and blood donation awareness content from LifeBlood Foundation.",
+    "Stay informed with healthcare tips, doctor messages, and blood donation awareness content from Blood Connect – InfoPark News Initiate, Kochi.",
 };
 
 export const dynamic = 'force-dynamic';

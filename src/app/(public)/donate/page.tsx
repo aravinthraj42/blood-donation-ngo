@@ -6,7 +6,7 @@ import { Heart, Shield, Clock, Users } from "lucide-react";
 export const metadata: Metadata = {
   title: "Become a Blood Donor",
   description:
-    "Register as a blood donor with LifeBlood Foundation. Your donation can save up to 3 lives. Join our community of heroes today.",
+    "Register as a blood donor with Blood Connect – InfoPark News Initiate, Kochi. Your donation can save up to 3 lives. Join our community of heroes today.",
 };
 
 export const dynamic = 'force-dynamic';

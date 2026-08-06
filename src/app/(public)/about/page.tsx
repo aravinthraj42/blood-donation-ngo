@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Learn about LifeBlood Foundation's mission to save lives through blood donation awareness and connecting donors with those in need.",
+    "Learn about Blood Connect – InfoPark News Initiate, Kochi. Our mission to save lives through blood donation awareness and connecting donors with those in need.",
 };
 
 export const dynamic = 'force-dynamic';
@@ -43,7 +43,7 @@ const milestones = [
 
 export default async function AboutPage() {
   const settings = await getAllSettings();
-  const ngoName = settings.NGO_NAME || "LifeBlood Foundation";
+  const ngoName = settings.NGO_NAME || "Blood Connect";
   const ngoDescription = settings.NGO_DESCRIPTION || "";
 
   return (

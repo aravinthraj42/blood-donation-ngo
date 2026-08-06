@@ -14,9 +14,9 @@
 -- ⚙️  EDIT THESE VALUES BEFORE RUNNING:
 DO $$
 DECLARE
-  v_auth_user_id  UUID    := 'PASTE-AUTH-USER-UUID-HERE';  -- from Supabase Auth → Users
-  v_email         TEXT    := 'admin@yourdomain.com';        -- must match Auth user email
-  v_full_name     TEXT    := 'Full Name Here';
+  v_auth_user_id  UUID    := '15f22534-010d-47de-93a4-a6ce475ba61e';  -- from Supabase Auth → Users
+  v_email         TEXT    := 'aravinthraj42@gmail.com';        -- must match Auth user email
+  v_full_name     TEXT    := 'Aravinth Raj J';
   v_role          TEXT    := 'SUPER_ADMIN';                 -- 'SUPER_ADMIN' or 'ADMIN'
 BEGIN
   INSERT INTO admin_users (auth_user_id, email, full_name, role, is_active)

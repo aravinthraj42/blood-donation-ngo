@@ -16,11 +16,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | LifeBlood Foundation",
-    default: "LifeBlood Foundation - Donate Blood, Save Lives",
+    template: "%s | Blood Connect",
+    default: "Blood Connect - Donate Blood, Save Lives",
   },
   description:
-    "Join LifeBlood Foundation in our mission to save lives through blood donation. Register as a donor, request blood, and learn about the importance of blood donation.",
+    "Join Blood Connect – InfoPark News Initiate, Kochi in our mission to save lives through blood donation. Register as a donor, request blood, and learn about the importance of blood donation.",
   keywords: [
     "blood donation",
     "blood donor",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_IN",
-    siteName: "LifeBlood Foundation",
+    siteName: "Blood Connect",
   },
 };
 

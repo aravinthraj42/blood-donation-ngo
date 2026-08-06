@@ -3,14 +3,14 @@ import { getAllSettings } from "@/services/public";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "Privacy Policy for LifeBlood Foundation blood donation platform.",
+  description: "Privacy Policy for Blood Connect – InfoPark News Initiate, Kochi blood donation platform.",
 };
 
 export const dynamic = 'force-dynamic';
 
 export default async function PrivacyPolicyPage() {
   const settings = await getAllSettings();
-  const ngoName = settings.NGO_NAME || "LifeBlood Foundation";
+  const ngoName = settings.NGO_NAME || "Blood Connect";
   const contactEmail = settings.CONTACT_EMAIL || "contact@lifeblood.org";
 
   return (

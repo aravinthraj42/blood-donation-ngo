@@ -7,7 +7,7 @@ import { ContactForm } from "@/components/forms/contact-form";
 export const metadata: Metadata = {
   title: "Contact Us",
   description:
-    "Get in touch with LifeBlood Foundation. We're here to help with blood donation queries, requests, and partnerships.",
+    "Get in touch with Blood Connect – InfoPark News Initiate, Kochi. We're here to help with blood donation queries, requests, and partnerships.",
 };
 
 export const dynamic = 'force-dynamic';

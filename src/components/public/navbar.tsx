@@ -31,8 +31,8 @@ export function PublicNavbar() {
               <Heart className="w-6 h-6 text-white" fill="currentColor" />
             </div>
             <div>
-              <span className="font-bold text-xl text-gray-900">LifeBlood</span>
-              <span className="text-xs text-gray-500 block -mt-1">Foundation</span>
+              <span className="font-bold text-xl text-gray-900">Blood Connect</span>
+              <span className="text-xs text-gray-500 block -mt-1">InfoPark News Initiate</span>
             </div>
           </Link>
 
@@ -79,7 +79,7 @@ export function PublicNavbar() {
                   <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
                     <Heart className="w-6 h-6 text-white" fill="currentColor" />
                   </div>
-                  <span className="font-bold text-xl">LifeBlood</span>
+                  <span className="font-bold text-xl">Blood Connect</span>
                 </div>
 
                 <nav className="flex flex-col gap-1">

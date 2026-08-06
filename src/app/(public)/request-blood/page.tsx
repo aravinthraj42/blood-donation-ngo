@@ -6,7 +6,7 @@ import { Phone, Clock, AlertTriangle } from "lucide-react";
 export const metadata: Metadata = {
   title: "Request Blood",
   description:
-    "Submit a blood request through LifeBlood Foundation. We connect patients with registered blood donors for life-saving transfusions.",
+    "Submit a blood request through Blood Connect – InfoPark News Initiate, Kochi. We connect patients with registered blood donors for life-saving transfusions.",
 };
 
 export const dynamic = 'force-dynamic';

@@ -3,14 +3,14 @@ import { getAllSettings } from "@/services/public";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "Terms of Service for LifeBlood Foundation blood donation platform.",
+  description: "Terms of Service for Blood Connect – InfoPark News Initiate, Kochi blood donation platform.",
 };
 
 export const dynamic = 'force-dynamic';
 
 export default async function TermsPage() {
   const settings = await getAllSettings();
-  const ngoName = settings.NGO_NAME || "LifeBlood Foundation";
+  const ngoName = settings.NGO_NAME || "Blood Connect";
   const contactEmail = settings.CONTACT_EMAIL || "contact@lifeblood.org";
 
   return (

@@ -29,8 +29,8 @@ export function PublicFooter() {
                 <Heart className="w-6 h-6 text-white" fill="currentColor" />
               </div>
               <div>
-                <span className="font-bold text-xl text-white">LifeBlood</span>
-                <span className="text-xs text-gray-400 block -mt-1">Foundation</span>
+                <span className="font-bold text-xl text-white">Blood Connect</span>
+                <span className="text-xs text-gray-400 block -mt-1">InfoPark News Initiate</span>
               </div>
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed">
@@ -66,14 +66,14 @@ export function PublicFooter() {
               </li>
               <li className="flex items-start gap-3">
                 <Mail className="w-4 h-4 mt-0.5 text-primary" />
-                <span className="text-sm text-gray-400">contact@lifeblood.org</span>
+                <span className="text-sm text-gray-400">contact@bloodconnect.org</span>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 mt-0.5 text-primary" />
                 <span className="text-sm text-gray-400">
-                  123 Healthcare Avenue,
+                  InfoPark, Kakkanad,
                   <br />
-                  Mumbai, Maharashtra
+                  Kochi, Kerala
                 </span>
               </li>
             </ul>
@@ -107,7 +107,7 @@ export function PublicFooter() {
         {/* Bottom bar */}
         <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-gray-500">
-            © {currentYear} LifeBlood Foundation. All rights reserved.
+            © {currentYear} Blood Connect – InfoPark News Initiate, Kochi. All rights reserved.
           </p>
           <p className="text-xs text-gray-600">
             Made with <Heart className="w-3 h-3 inline text-primary" fill="currentColor" /> for humanity

@@ -1,5 +1,5 @@
-export const APP_NAME = "LifeBlood Foundation";
-export const APP_DESCRIPTION = "Connecting donors with those in need. Save lives through blood donation.";
+export const APP_NAME = "Blood Connect";
+export const APP_DESCRIPTION = "InfoPark News Initiate - Kochi. Connecting donors with those in need through blood donation.";
 
 export const BLOOD_GROUPS = [
   { name: "A_POSITIVE", displayName: "A+" },
@@ -94,14 +94,14 @@ export const AUDIT_ACTION = {
 } as const;
 
 export const DEFAULT_SETTINGS = {
-  NGO_NAME: "LifeBlood Foundation",
-  NGO_DESCRIPTION: "A non-profit organization dedicated to saving lives through blood donation awareness and connecting donors with those in need.",
+  NGO_NAME: "Blood Connect",
+  NGO_DESCRIPTION: "InfoPark News Initiate – Kochi. A non-profit initiative dedicated to saving lives through blood donation awareness and connecting donors with those in need.",
   NGO_LOGO: "",
   CONTACT_PHONE: "+91 1234567890",
-  CONTACT_EMAIL: "contact@lifeblood.org",
-  ADDRESS: "123 Healthcare Avenue",
-  CITY: "Mumbai",
-  STATE: "Maharashtra",
+  CONTACT_EMAIL: "contact@bloodconnect.org",
+  ADDRESS: "InfoPark, Kakkanad",
+  CITY: "Kochi",
+  STATE: "Kerala",
   SOCIAL_FACEBOOK: "",
   SOCIAL_TWITTER: "",
   SOCIAL_INSTAGRAM: "",

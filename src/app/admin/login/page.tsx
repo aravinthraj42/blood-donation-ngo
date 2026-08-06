@@ -4,7 +4,7 @@ import { LoginForm } from "@/components/admin/login-form";
 import { Heart, Loader2 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Admin Login | LifeBlood Foundation",
+  title: "Admin Login | Blood Connect",
   description: "Sign in to the admin dashboard",
 };
 
