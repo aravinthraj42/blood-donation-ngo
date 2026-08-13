@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
-import { requireAdmin } from "@/lib/auth";
 import { getDonors, getAllBloodGroups } from "@/services/admin";
 import { DonorsTable } from "@/components/admin/donors-table";
 import { DonorsFilters } from "@/components/admin/donors-filters";
@@ -27,7 +26,6 @@ interface DonorsPageProps {
 }
 
 export default async function DonorsPage({ searchParams }: DonorsPageProps) {
-  await requireAdmin();
   const params = await searchParams;
 
   const page = parseInt(params.page || "1", 10);

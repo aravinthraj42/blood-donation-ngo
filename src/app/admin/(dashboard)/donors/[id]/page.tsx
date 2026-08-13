@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { format } from "date-fns";
-import { requireAdmin } from "@/lib/auth";
 import { getDonorById } from "@/services/admin";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -31,7 +30,6 @@ const verificationColors: Record<string, string> = {
 };
 
 export default async function DonorDetailPage({ params }: DonorDetailPageProps) {
-  await requireAdmin();
   const { id } = await params;
 
   const donor = await getDonorById(id);

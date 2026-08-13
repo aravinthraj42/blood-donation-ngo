@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -41,7 +41,7 @@ interface AdminHeaderProps {
 }
 
 const navigation = [
-  { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
   { name: "Donors", href: "/admin/donors", icon: Users },
   { name: "Blood Requests", href: "/admin/requests", icon: Droplet },
   { name: "Content", href: "/admin/content", icon: FileText },
@@ -54,7 +54,6 @@ const navigation = [
 export function AdminHeader({ admin }: AdminHeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
 
   const initials = admin.fullName
     .split(" ")
@@ -65,7 +64,7 @@ export function AdminHeader({ admin }: AdminHeaderProps) {
 
   const handleSignOut = async () => {
     await signOut();
-    router.push("/admin/login");
+    window.location.href = "/admin/login";
   };
 
   return (
@@ -94,7 +93,7 @@ export function AdminHeader({ admin }: AdminHeaderProps) {
                 {navigation.map((item) => {
                   const isActive =
                     pathname === item.href ||
-                    (item.href !== "/admin" && pathname.startsWith(item.href));
+                    (item.href !== "/admin/dashboard" && pathname.startsWith(item.href));
                   
                   return (
                     <Link

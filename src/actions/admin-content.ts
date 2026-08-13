@@ -46,6 +46,7 @@ export async function createContent(data: ContentData) {
     revalidatePath("/health-awareness");
     return { success: true };
   } catch (error) {
+    if (error && typeof error === 'object' && 'digest' in error) throw error;
     console.error("Error creating content:", error);
     return { success: false, error: "Failed to create content" };
   }
@@ -83,6 +84,7 @@ export async function updateContent(id: string, data: ContentData) {
     revalidatePath("/health-awareness");
     return { success: true };
   } catch (error) {
+    if (error && typeof error === 'object' && 'digest' in error) throw error;
     console.error("Error updating content:", error);
     return { success: false, error: "Failed to update content" };
   }
@@ -106,6 +108,7 @@ export async function deleteContent(id: string) {
     revalidatePath("/health-awareness");
     return { success: true };
   } catch (error) {
+    if (error && typeof error === 'object' && 'digest' in error) throw error;
     console.error("Error deleting content:", error);
     return { success: false, error: "Failed to delete content" };
   }

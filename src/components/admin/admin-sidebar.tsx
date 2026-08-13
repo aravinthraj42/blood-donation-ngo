@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 
 const navigation = [
-  { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
   { name: "Donors", href: "/admin/donors", icon: Users },
   { name: "Blood Requests", href: "/admin/requests", icon: Droplet },
   { name: "Content", href: "/admin/content", icon: FileText },
@@ -50,7 +50,7 @@ export function AdminSidebar() {
             {navigation.map((item) => {
               const isActive =
                 pathname === item.href ||
-                (item.href !== "/admin" && pathname.startsWith(item.href));
+                (item.href !== "/admin/dashboard" && pathname.startsWith(item.href));
               
               return (
                 <Link

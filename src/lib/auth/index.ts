@@ -58,20 +58,47 @@ export async function getSession(): Promise<AdminSession | null> {
 }
 
 export async function requireAdmin(): Promise<AdminSession> {
-  const session = await getSession();
+  const supabase = await createClient();
 
-  if (!session) {
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  if (error || !user) {
     redirect("/admin/login");
   }
 
-  return session;
+  const [admin] = await db
+    .select()
+    .from(adminUsers)
+    .where(eq(adminUsers.authUserId, user.id))
+    .limit(1);
+
+  if (!admin || !admin.isActive) {
+    redirect("/admin/unauthorized");
+  }
+
+  return {
+    user: {
+      id: user.id,
+      email: user.email!,
+    },
+    admin: {
+      id: admin.id,
+      email: admin.email,
+      fullName: admin.fullName,
+      role: admin.role as AdminRole,
+      isActive: admin.isActive,
+    },
+  };
 }
 
 export async function requireSuperAdmin(): Promise<AdminSession> {
   const session = await requireAdmin();
 
   if (session.admin.role !== "SUPER_ADMIN") {
-    redirect("/admin?error=unauthorized");
+    redirect("/admin/dashboard?error=unauthorized");
   }
 
   return session;

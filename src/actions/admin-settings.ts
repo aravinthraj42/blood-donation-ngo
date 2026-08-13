@@ -32,6 +32,7 @@ export async function updateSettings(data: Record<string, string>) {
     revalidatePath("/");
     return { success: true };
   } catch (error) {
+    if (error && typeof error === 'object' && 'digest' in error) throw error;
     console.error("Error updating settings:", error);
     return { success: false, error: "Failed to update settings" };
   }

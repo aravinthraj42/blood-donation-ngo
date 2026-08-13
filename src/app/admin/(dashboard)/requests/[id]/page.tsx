@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { format } from "date-fns";
-import { requireAdmin } from "@/lib/auth";
 import { getBloodRequestById } from "@/services/admin";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -34,7 +33,6 @@ const urgencyColors: Record<string, string> = {
 };
 
 export default async function RequestDetailPage({ params }: RequestDetailPageProps) {
-  await requireAdmin();
   const { id } = await params;
 
   const request = await getBloodRequestById(id);

@@ -18,6 +18,7 @@ export async function markNotificationRead(notificationId: string) {
     revalidatePath("/admin/notifications");
     return { success: true };
   } catch (error) {
+    if (error && typeof error === 'object' && 'digest' in error) throw error;
     console.error("Error marking notification as read:", error);
     return { success: false, error: "Failed to mark notification as read" };
   }
@@ -40,6 +41,7 @@ export async function markAllNotificationsRead(adminId: string) {
     revalidatePath("/admin/notifications");
     return { success: true };
   } catch (error) {
+    if (error && typeof error === 'object' && 'digest' in error) throw error;
     console.error("Error marking all notifications as read:", error);
     return { success: false, error: "Failed to mark notifications as read" };
   }

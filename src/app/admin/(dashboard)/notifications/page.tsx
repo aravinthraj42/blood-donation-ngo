@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { format } from "date-fns";
-import { requireAdmin } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { getNotifications } from "@/services/admin";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -37,7 +37,7 @@ const typeColors: Record<string, string> = {
 };
 
 export default async function NotificationsPage({ searchParams }: NotificationsPageProps) {
-  const session = await requireAdmin();
+  const session = (await getSession())!;
   const params = await searchParams;
 
   const page = parseInt(params.page || "1", 10);

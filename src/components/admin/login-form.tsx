@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginInput } from "@/lib/validations/auth";
@@ -14,9 +14,8 @@ import { Loader2, AlertCircle } from "lucide-react";
 export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirect") || "/admin";
+  const redirectTo = searchParams.get("redirect") || "/admin/dashboard";
 
   const {
     register,
@@ -32,16 +31,16 @@ export function LoginForm() {
 
     try {
       const result = await signIn(data);
-      
-      if (result.success) {
-        router.push(redirectTo);
-        router.refresh();
+
+      if (result?.success) {
+        // Hard navigation ensures the new session cookie is sent with the next request
+        window.location.href = redirectTo;
       } else {
-        setError(result.error || "Login failed");
+        setError(result?.error || "Login failed. Please check your credentials.");
+        setIsLoading(false);
       }
     } catch {
       setError("An unexpected error occurred");
-    } finally {
       setIsLoading(false);
     }
   };

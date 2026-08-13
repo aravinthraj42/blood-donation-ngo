@@ -35,14 +35,11 @@ export async function updateSession(request: NextRequest) {
 
   // Protected admin routes
   if (request.nextUrl.pathname.startsWith("/admin")) {
-    // Allow access to login page
-    if (request.nextUrl.pathname === "/admin/login") {
-      // If user is already logged in, redirect to dashboard
-      if (user) {
-        const url = request.nextUrl.clone();
-        url.pathname = "/admin";
-        return NextResponse.redirect(url);
-      }
+    // Allow access to login and unauthorized pages without auth redirect
+    if (
+      request.nextUrl.pathname === "/admin/login" ||
+      request.nextUrl.pathname === "/admin/unauthorized"
+    ) {
       return supabaseResponse;
     }
 

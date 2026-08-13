@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { format } from "date-fns";
-import { requireAdmin } from "@/lib/auth";
 import { getContent } from "@/services/admin";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -41,7 +40,6 @@ const statusColors: Record<string, string> = {
 };
 
 export default async function ContentPage({ searchParams }: ContentPageProps) {
-  await requireAdmin();
   const params = await searchParams;
 
   const page = parseInt(params.page || "1", 10);

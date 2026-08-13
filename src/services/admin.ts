@@ -21,52 +21,36 @@ import type {
 export async function getDashboardStats() {
   const today = new Date().toISOString().split("T")[0];
 
-  const [
-    totalDonors,
-    activeDonors,
-    pendingDonors,
-    verifiedDonors,
-    totalRequests,
-    pendingRequests,
-    urgentRequests,
-    fulfilledRequests,
-  ] = await Promise.all([
-    db.select({ count: count() }).from(donors),
-    db.select({ count: count() }).from(donors).where(eq(donors.donorStatus, "ACTIVE")),
-    db.select({ count: count() }).from(donors).where(eq(donors.donorStatus, "PENDING")),
-    db.select({ count: count() }).from(donors).where(eq(donors.verificationStatus, "VERIFIED")),
-    db.select({ count: count() }).from(bloodRequests),
-    db.select({ count: count() }).from(bloodRequests).where(eq(bloodRequests.status, "PENDING")),
-    db.select({ count: count() }).from(bloodRequests).where(
-      and(
-        or(eq(bloodRequests.urgency, "URGENT"), eq(bloodRequests.urgency, "EMERGENCY")),
-        eq(bloodRequests.status, "PENDING")
-      )
-    ),
-    db.select({ count: count() }).from(bloodRequests).where(eq(bloodRequests.status, "FULFILLED")),
+  const [donorStats, requestStats] = await Promise.all([
+    db
+      .select({
+        total: sql<number>`count(*)::int`,
+        active: sql<number>`count(*) filter (where ${donors.donorStatus} = 'ACTIVE')::int`,
+        pending: sql<number>`count(*) filter (where ${donors.donorStatus} = 'PENDING')::int`,
+        verified: sql<number>`count(*) filter (where ${donors.verificationStatus} = 'VERIFIED')::int`,
+        eligible: sql<number>`count(*) filter (where ${donors.donorStatus} = 'ACTIVE' and ${donors.consentToContact} = true and ${donors.nextEligibleDate} <= ${today})::int`,
+      })
+      .from(donors),
+    db
+      .select({
+        total: sql<number>`count(*)::int`,
+        pending: sql<number>`count(*) filter (where ${bloodRequests.status} = 'PENDING')::int`,
+        urgent: sql<number>`count(*) filter (where (${bloodRequests.urgency} = 'URGENT' or ${bloodRequests.urgency} = 'EMERGENCY') and ${bloodRequests.status} = 'PENDING')::int`,
+        fulfilled: sql<number>`count(*) filter (where ${bloodRequests.status} = 'FULFILLED')::int`,
+      })
+      .from(bloodRequests),
   ]);
 
-  const eligibleDonors = await db
-    .select({ count: count() })
-    .from(donors)
-    .where(
-      and(
-        eq(donors.donorStatus, "ACTIVE"),
-        eq(donors.consentToContact, true),
-        lte(donors.nextEligibleDate, today)
-      )
-    );
-
   return {
-    totalDonors: totalDonors[0].count,
-    activeDonors: activeDonors[0].count,
-    pendingDonors: pendingDonors[0].count,
-    verifiedDonors: verifiedDonors[0].count,
-    eligibleDonors: eligibleDonors[0].count,
-    totalRequests: totalRequests[0].count,
-    pendingRequests: pendingRequests[0].count,
-    urgentRequests: urgentRequests[0].count,
-    fulfilledRequests: fulfilledRequests[0].count,
+    totalDonors: donorStats[0].total,
+    activeDonors: donorStats[0].active,
+    pendingDonors: donorStats[0].pending,
+    verifiedDonors: donorStats[0].verified,
+    eligibleDonors: donorStats[0].eligible,
+    totalRequests: requestStats[0].total,
+    pendingRequests: requestStats[0].pending,
+    urgentRequests: requestStats[0].urgent,
+    fulfilledRequests: requestStats[0].fulfilled,
   };
 }
 

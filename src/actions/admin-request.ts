@@ -42,6 +42,7 @@ export async function updateRequestStatus(
     revalidatePath("/admin/requests");
     return { success: true };
   } catch (error) {
+    if (error && typeof error === 'object' && 'digest' in error) throw error;
     console.error("Error updating request status:", error);
     return { success: false, error: "Failed to update request status" };
   }
@@ -83,6 +84,7 @@ export async function addRequestNote(requestId: string, note: string) {
     revalidatePath(`/admin/requests/${requestId}`);
     return { success: true };
   } catch (error) {
+    if (error && typeof error === 'object' && 'digest' in error) throw error;
     console.error("Error adding request note:", error);
     return { success: false, error: "Failed to add note" };
   }

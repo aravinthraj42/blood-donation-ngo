@@ -40,6 +40,7 @@ export async function updateDonorStatus(
     revalidatePath("/admin/donors");
     return { success: true };
   } catch (error) {
+    if (error && typeof error === 'object' && 'digest' in error) throw error;
     console.error("Error updating donor status:", error);
     return { success: false, error: "Failed to update donor status" };
   }
@@ -69,6 +70,7 @@ export async function verifyDonor(donorId: string) {
     revalidatePath("/admin/donors");
     return { success: true };
   } catch (error) {
+    if (error && typeof error === 'object' && 'digest' in error) throw error;
     console.error("Error verifying donor:", error);
     return { success: false, error: "Failed to verify donor" };
   }
@@ -118,6 +120,7 @@ export async function updateDonor(
     revalidatePath(`/admin/donors/${donorId}`);
     return { success: true };
   } catch (error) {
+    if (error && typeof error === 'object' && 'digest' in error) throw error;
     console.error("Error updating donor:", error);
     return { success: false, error: "Failed to update donor" };
   }

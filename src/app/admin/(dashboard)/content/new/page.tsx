@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { requireAdmin } from "@/lib/auth";
 import { ContentForm } from "@/components/admin/content-form";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -9,9 +8,7 @@ export const metadata: Metadata = {
   title: "Create Content",
 };
 
-export default async function NewContentPage() {
-  await requireAdmin();
-
+export default function NewContentPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">

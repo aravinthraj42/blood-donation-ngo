@@ -5,9 +5,20 @@ import * as relations from "./schema/relations";
 
 const connectionString = process.env.DATABASE_URL!;
 
-const client = postgres(connectionString, {
+const globalForDb = globalThis as unknown as {
+  pgClient: ReturnType<typeof postgres> | undefined;
+};
+
+const client = globalForDb.pgClient ?? postgres(connectionString, {
   prepare: false,
+  max: 6,
+  idle_timeout: 20,
+  max_lifetime: 60 * 5,
 });
+
+if (process.env.NODE_ENV !== "production") {
+  globalForDb.pgClient = client;
+}
 
 export const db = drizzle(client, { 
   schema: { ...schema, ...relations },

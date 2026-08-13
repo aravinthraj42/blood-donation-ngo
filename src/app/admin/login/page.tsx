@@ -1,5 +1,7 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { getSession } from "@/lib/auth";
 import { LoginForm } from "@/components/admin/login-form";
 import { Heart, Loader2 } from "lucide-react";
 
@@ -16,7 +18,12 @@ function LoginFormFallback() {
   );
 }
 
-export default function AdminLoginPage() {
+export default async function AdminLoginPage() {
+  const session = await getSession();
+  if (session) {
+    redirect("/admin/dashboard");
+  }
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-md">

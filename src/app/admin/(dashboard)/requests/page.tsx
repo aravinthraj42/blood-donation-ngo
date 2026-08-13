@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { requireAdmin } from "@/lib/auth";
 import { getBloodRequests, getAllBloodGroups } from "@/services/admin";
 import { RequestsTable } from "@/components/admin/requests-table";
 import { RequestsFilters } from "@/components/admin/requests-filters";
@@ -22,7 +21,6 @@ interface RequestsPageProps {
 }
 
 export default async function RequestsPage({ searchParams }: RequestsPageProps) {
-  await requireAdmin();
   const params = await searchParams;
 
   const page = parseInt(params.page || "1", 10);
