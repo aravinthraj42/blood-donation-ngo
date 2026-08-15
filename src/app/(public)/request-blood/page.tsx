@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { BloodRequestForm } from "@/components/forms/blood-request-form";
-import { getBloodGroups } from "@/services/public";
+import { getBloodGroups, getAllSettings } from "@/services/public";
+import { DEFAULT_SETTINGS } from "@/config/constants";
 import { Phone, Clock, AlertTriangle } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -12,7 +13,13 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function RequestBloodPage() {
-  const bloodGroups = await getBloodGroups();
+  const [bloodGroups, settings] = await Promise.all([
+    getBloodGroups(),
+    getAllSettings(),
+  ]);
+
+  const contactPhone = settings.CONTACT_PHONE || DEFAULT_SETTINGS.CONTACT_PHONE;
+  const contactPhoneTel = contactPhone.replace(/\s/g, "");
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -47,8 +54,8 @@ export default async function RequestBloodPage() {
               <div>
                 <h3 className="font-semibold text-blue-900">Call Us</h3>
                 <p className="text-sm text-blue-700">
-                  <a href="tel:+911234567890" className="font-medium">
-                    +91 1234567890
+                  <a href={`tel:${contactPhoneTel}`} className="font-medium">
+                    {contactPhone}
                   </a>
                 </p>
               </div>
@@ -69,7 +76,7 @@ export default async function RequestBloodPage() {
       {/* Form */}
       <section className="py-12 lg:py-16">
         <div className="container mx-auto px-4 lg:px-6">
-          <BloodRequestForm bloodGroups={bloodGroups} />
+          <BloodRequestForm bloodGroups={bloodGroups} contactPhone={contactPhone} />
         </div>
       </section>
     </div>

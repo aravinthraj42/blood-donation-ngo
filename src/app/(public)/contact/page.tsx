@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { getAllSettings } from "@/services/public";
+import { DEFAULT_SETTINGS } from "@/config/constants";
 import { Card, CardContent } from "@/components/ui/card";
 import { Phone, Mail, MapPin, Clock } from "lucide-react";
 import { ContactForm } from "@/components/forms/contact-form";
@@ -15,23 +16,29 @@ export const dynamic = 'force-dynamic';
 export default async function ContactPage() {
   const settings = await getAllSettings();
 
+  const phone = settings.CONTACT_PHONE || DEFAULT_SETTINGS.CONTACT_PHONE;
+  const email = settings.CONTACT_EMAIL || DEFAULT_SETTINGS.CONTACT_EMAIL;
+  const address = settings.ADDRESS || DEFAULT_SETTINGS.ADDRESS;
+  const city = settings.CITY || DEFAULT_SETTINGS.CITY;
+  const state = settings.STATE || DEFAULT_SETTINGS.STATE;
+
   const contactInfo = [
     {
       icon: Phone,
       label: "Phone",
-      value: settings.CONTACT_PHONE || "+91 1234567890",
-      href: `tel:${settings.CONTACT_PHONE || "+911234567890"}`,
+      value: phone,
+      href: `tel:${phone.replace(/\s/g, "")}`,
     },
     {
       icon: Mail,
       label: "Email",
-      value: settings.CONTACT_EMAIL || "contact@lifeblood.org",
-      href: `mailto:${settings.CONTACT_EMAIL || "contact@lifeblood.org"}`,
+      value: email,
+      href: `mailto:${email}`,
     },
     {
       icon: MapPin,
       label: "Address",
-      value: `${settings.ADDRESS || "123 Healthcare Avenue"}, ${settings.CITY || "Mumbai"}, ${settings.STATE || "Maharashtra"}`,
+      value: `${address}, ${city}, ${state}`,
     },
     {
       icon: Clock,
@@ -102,7 +109,7 @@ export default async function ContactPage() {
                   or submit a blood request through our website.
                 </p>
                 <a
-                  href={`tel:${settings.CONTACT_PHONE || "+911234567890"}`}
+                  href={`tel:${phone.replace(/\s/g, "")}`}
                   className="inline-flex items-center text-sm font-medium text-red-700 hover:text-red-800"
                 >
                   <Phone className="w-4 h-4 mr-1" />

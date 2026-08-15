@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Edit, Phone, Mail, MapPin, Calendar, Droplet } from "lucide-react";
+import { ArrowLeft, Edit, Phone, Calendar, Droplet, Briefcase } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Donor Details",
@@ -56,7 +56,7 @@ export default async function DonorDetailPage({ params }: DonorDetailPageProps) 
           </div>
         </div>
         <Button asChild>
-          <Link href={`/admin/donors/${id}?edit=true`}>
+          <Link href={`/admin/donors/${id}/edit`}>
             <Edit className="w-4 h-4 mr-2" />
             Edit Donor
           </Link>
@@ -84,26 +84,16 @@ export default async function DonorDetailPage({ params }: DonorDetailPageProps) 
               </div>
             </div>
 
-            <Separator />
-
-            <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-gray-500">Age</p>
+                <p className="font-medium">{donor.age ?? "-"}</p>
+              </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-gray-400" />
-                <span>{donor.phone}</span>
-              </div>
-              {donor.email && (
-                <div className="flex items-center gap-3">
-                  <Mail className="w-4 h-4 text-gray-400" />
-                  <span>{donor.email}</span>
-                </div>
-              )}
-              <div className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-gray-400 mt-0.5" />
                 <div>
-                  <p>{donor.address}</p>
-                  <p className="text-gray-500">
-                    {donor.city}, {donor.district}, {donor.state} - {donor.pincode}
-                  </p>
+                  <p className="text-sm text-gray-500">Phone</p>
+                  <p className="font-medium">{donor.phone}</p>
                 </div>
               </div>
             </div>
@@ -111,45 +101,37 @@ export default async function DonorDetailPage({ params }: DonorDetailPageProps) 
             <Separator />
 
             <div className="grid grid-cols-2 gap-4">
-              {donor.dateOfBirth && (
+              <div className="flex items-start gap-3">
+                <Briefcase className="w-4 h-4 text-gray-400 mt-0.5" />
                 <div>
-                  <p className="text-sm text-gray-500">Date of Birth</p>
-                  <p className="font-medium flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-gray-400" />
-                    {format(new Date(donor.dateOfBirth), "dd MMMM yyyy")}
-                  </p>
+                  <p className="text-sm text-gray-500">Company</p>
+                  <p className="font-medium">{donor.occupation || "-"}</p>
                 </div>
-              )}
-              {donor.occupation && (
-                <div>
-                  <p className="text-sm text-gray-500">Occupation</p>
-                  <p className="font-medium">{donor.occupation}</p>
-                </div>
-              )}
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">IT Employee</p>
+                <Badge
+                  className={
+                    donor.isItEmployee
+                      ? "bg-blue-100 text-blue-700"
+                      : "bg-gray-100 text-gray-700"
+                  }
+                >
+                  {donor.isItEmployee ? "IT Employee" : "Non IT Employee"}
+                </Badge>
+              </div>
             </div>
+
+            <Separator />
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-500">Preferred Contact</p>
-                <p className="font-medium">{donor.preferredContactMethod}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Consent to Contact</p>
+                <p className="text-sm text-gray-500">Will to Donate</p>
                 <p className="font-medium">
                   {donor.consentToContact ? "Yes" : "No"}
                 </p>
               </div>
             </div>
-
-            {donor.additionalNotes && (
-              <>
-                <Separator />
-                <div>
-                  <p className="text-sm text-gray-500 mb-1">Additional Notes</p>
-                  <p className="text-gray-700">{donor.additionalNotes}</p>
-                </div>
-              </>
-            )}
           </CardContent>
         </Card>
 
@@ -195,7 +177,8 @@ export default async function DonorDetailPage({ params }: DonorDetailPageProps) 
             <CardContent className="space-y-4">
               <div>
                 <p className="text-sm text-gray-500">Last Donation</p>
-                <p className="font-medium">
+                <p className="font-medium flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-gray-400" />
                   {donor.lastDonationDate
                     ? format(new Date(donor.lastDonationDate), "dd MMMM yyyy")
                     : "No record"}

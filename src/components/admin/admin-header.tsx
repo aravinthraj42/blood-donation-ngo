@@ -27,6 +27,7 @@ import {
   Settings,
   ClipboardList,
   Heart,
+  ExternalLink,
 } from "lucide-react";
 import { signOut } from "@/actions/auth";
 
@@ -81,12 +82,12 @@ export function AdminHeader({ admin }: AdminHeaderProps) {
           <SheetContent side="left" className="w-64 p-0">
             <div className="flex flex-col h-full">
               <div className="flex items-center gap-2 px-4 h-16 border-b">
-                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
                   <Heart className="w-5 h-5 text-white" fill="currentColor" />
                 </div>
                 <div>
-                  <span className="font-semibold text-gray-900">Blood Connect</span>
-                  <span className="text-xs text-gray-500 block">Admin Panel</span>
+                  <span className="font-semibold text-gray-900 block text-sm leading-tight">Blood Connect</span>
+                  <span className="text-xs text-gray-500 block leading-tight">Admin Panel</span>
                 </div>
               </div>
               <nav className="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
@@ -127,16 +128,29 @@ export function AdminHeader({ admin }: AdminHeaderProps) {
           </SheetContent>
         </Sheet>
 
-        {/* Logo for mobile */}
+        {/* Mobile logo */}
         <div className="flex items-center gap-2 lg:hidden">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
             <Heart className="w-5 h-5 text-white" fill="currentColor" />
           </div>
-          <span className="font-semibold text-gray-900">Blood Connect</span>
+          <span className="font-semibold text-gray-900 text-sm">Blood Connect</span>
         </div>
 
-        {/* Spacer for desktop */}
-        <div className="hidden lg:block" />
+        {/* Centre-left: InfoPark label (desktop only) */}
+        <div className="hidden lg:flex items-center">
+          <span className="text-sm font-bold text-primary tracking-wide">
+            InfoPark News Initiate - Kochi
+          </span>
+        </div>
+
+        {/* Right side: Visit Site + User menu */}
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" className="hidden lg:flex" asChild>
+            <Link href="/" target="_blank" rel="noopener noreferrer">
+              <ExternalLink className="w-4 h-4 mr-2" />
+              Visit Site
+            </Link>
+          </Button>
 
         {/* User menu */}
         <DropdownMenu>
@@ -175,6 +189,7 @@ export function AdminHeader({ admin }: AdminHeaderProps) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        </div>
       </div>
     </header>
   );

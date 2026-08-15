@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { format } from "date-fns";
 import {
   Table,
   TableBody,
@@ -20,7 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DataTablePagination } from "@/components/admin/data-table-pagination";
-import { MoreHorizontal, Eye, AlertTriangle } from "lucide-react";
+import { MoreHorizontal, Eye, Edit, AlertTriangle } from "lucide-react";
 import { updateRequestStatus } from "@/actions/admin-request";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -35,10 +34,10 @@ interface BloodRequest {
   id: string;
   referenceNumber: string;
   requesterName: string;
-  patientName: string;
+  patientName: string | null;
   unitsRequired: number;
-  hospitalName: string;
-  requiredDate: string;
+  hospitalName: string | null;
+  requiredDate: string | null;
   contactPhone: string;
   urgency: string;
   status: string;
@@ -102,11 +101,8 @@ export function RequestsTable({ requests, pagination }: RequestsTableProps) {
             <TableHeader>
               <TableRow>
                 <TableHead>Reference</TableHead>
-                <TableHead>Patient</TableHead>
+                <TableHead>Requester</TableHead>
                 <TableHead>Blood Group</TableHead>
-                <TableHead>Units</TableHead>
-                <TableHead>Hospital</TableHead>
-                <TableHead>Required Date</TableHead>
                 <TableHead>Contact</TableHead>
                 <TableHead>Urgency</TableHead>
                 <TableHead>Status</TableHead>
@@ -128,23 +124,11 @@ export function RequestsTable({ requests, pagination }: RequestsTableProps) {
                   <TableCell className="font-mono text-sm">
                     {request.referenceNumber}
                   </TableCell>
-                  <TableCell>
-                    <div>
-                      <p className="font-medium">{request.patientName}</p>
-                      <p className="text-xs text-gray-500">by {request.requesterName}</p>
-                    </div>
-                  </TableCell>
+                  <TableCell className="font-medium">{request.requesterName}</TableCell>
                   <TableCell>
                     <Badge variant="outline" className="font-semibold">
                       {request.bloodGroup?.displayName || "-"}
                     </Badge>
-                  </TableCell>
-                  <TableCell>{request.unitsRequired}</TableCell>
-                  <TableCell className="max-w-[150px] truncate">
-                    {request.hospitalName}
-                  </TableCell>
-                  <TableCell>
-                    {format(new Date(request.requiredDate), "dd MMM yyyy")}
                   </TableCell>
                   <TableCell>{request.contactPhone}</TableCell>
                   <TableCell>
@@ -173,6 +157,12 @@ export function RequestsTable({ requests, pagination }: RequestsTableProps) {
                         >
                           <Eye className="w-4 h-4 mr-2" />
                           View Details
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => router.push(`/admin/requests/${request.id}/edit`)}
+                        >
+                          <Edit className="w-4 h-4 mr-2" />
+                          Edit
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem

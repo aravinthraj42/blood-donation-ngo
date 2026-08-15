@@ -8,7 +8,6 @@ import { registerDonor } from "@/actions/donor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
@@ -18,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { Loader2, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface BloodGroup {
@@ -34,6 +33,7 @@ interface DonorRegistrationFormProps {
 export function DonorRegistrationForm({ bloodGroups }: DonorRegistrationFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [bgDisplay, setBgDisplay] = useState("");
 
   const {
     register,
@@ -44,12 +44,13 @@ export function DonorRegistrationForm({ bloodGroups }: DonorRegistrationFormProp
   } = useForm<DonorRegistrationInput>({
     resolver: zodResolver(donorRegistrationSchema),
     defaultValues: {
-      preferredContactMethod: "PHONE",
       consentToContact: false,
+      isItEmployee: true,
     },
   });
 
   const consentValue = watch("consentToContact");
+  const isItEmployeeValue = watch("isItEmployee");
 
   const onSubmit = async (data: DonorRegistrationInput) => {
     setIsSubmitting(true);
@@ -78,13 +79,9 @@ export function DonorRegistrationForm({ bloodGroups }: DonorRegistrationFormProp
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             Thank You for Registering!
           </h2>
-          <p className="text-gray-600 mb-6 max-w-md mx-auto">
+          <p className="text-gray-600 max-w-md mx-auto">
             Your registration has been received. Our team will verify your
             information and contact you soon.
-          </p>
-          <p className="text-sm text-gray-500">
-            <strong>Note:</strong> Final eligibility for blood donation will be
-            determined by qualified healthcare professionals during screening.
           </p>
         </CardContent>
       </Card>
@@ -96,26 +93,58 @@ export function DonorRegistrationForm({ bloodGroups }: DonorRegistrationFormProp
       <CardHeader>
         <CardTitle>Donor Registration</CardTitle>
         <CardDescription>
-          Fill out the form below to register as a blood donor. Fields marked
-          with * are required.
+          All fields are required. Fill out the form below to register as a blood donor.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+
           {/* Personal Information */}
           <div className="space-y-4">
             <h3 className="font-semibold text-gray-900">Personal Information</h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="fullName">Full Name *</Label>
+                <Label htmlFor="firstName">First Name *</Label>
                 <Input
-                  id="fullName"
-                  placeholder="Enter your full name"
-                  {...register("fullName")}
+                  id="firstName"
+                  placeholder="Enter first name"
+                  className="bg-white text-gray-900"
+                  {...register("firstName")}
                 />
-                {errors.fullName && (
-                  <p className="text-sm text-red-600">{errors.fullName.message}</p>
+                {errors.firstName && (
+                  <p className="text-sm text-red-600">{errors.firstName.message}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Last Name *</Label>
+                <Input
+                  id="lastName"
+                  placeholder="Enter last name"
+                  className="bg-white text-gray-900"
+                  {...register("lastName")}
+                />
+                {errors.lastName && (
+                  <p className="text-sm text-red-600">{errors.lastName.message}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="age">Age *</Label>
+                <Input
+                  id="age"
+                  type="number"
+                  min={18}
+                  max={65}
+                  placeholder="Enter your age"
+                  className="bg-white text-gray-900"
+                  {...register("age", { valueAsNumber: true })}
+                />
+                {errors.age && (
+                  <p className="text-sm text-red-600">{errors.age.message}</p>
                 )}
               </div>
 
@@ -123,49 +152,15 @@ export function DonorRegistrationForm({ bloodGroups }: DonorRegistrationFormProp
                 <Label htmlFor="phone">Phone Number *</Label>
                 <Input
                   id="phone"
-                  placeholder="+91 9876543210"
+                  placeholder="Enter your Phone Number"
+                  maxLength={10}
+                  className="bg-white text-gray-900"
                   {...register("phone")}
                 />
                 {errors.phone && (
                   <p className="text-sm text-red-600">{errors.phone.message}</p>
                 )}
               </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="your@email.com"
-                  {...register("email")}
-                />
-                {errors.email && (
-                  <p className="text-sm text-red-600">{errors.email.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="dateOfBirth">Date of Birth</Label>
-                <Input
-                  id="dateOfBirth"
-                  type="date"
-                  {...register("dateOfBirth")}
-                />
-                {errors.dateOfBirth && (
-                  <p className="text-sm text-red-600">{errors.dateOfBirth.message}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="occupation">Occupation / Company</Label>
-              <Input
-                id="occupation"
-                placeholder="Your occupation or company name"
-                {...register("occupation")}
-              />
             </div>
           </div>
 
@@ -175,10 +170,18 @@ export function DonorRegistrationForm({ bloodGroups }: DonorRegistrationFormProp
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="bloodGroupId">Blood Group *</Label>
-                <Select<string> onValueChange={(value) => value && setValue("bloodGroupId", value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select blood group" />
+                <Label>Blood Group *</Label>
+                <Select<string>
+                  onValueChange={(value) => {
+                    if (!value) return;
+                    setValue("bloodGroupId", value);
+                    setBgDisplay(bloodGroups.find((b) => b.id === value)?.displayName ?? "");
+                  }}
+                >
+                  <SelectTrigger className="bg-white text-gray-900">
+                    <SelectValue placeholder="Select blood group">
+                      {bgDisplay || undefined}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {bloodGroups.map((bg) => (
@@ -194,119 +197,82 @@ export function DonorRegistrationForm({ bloodGroups }: DonorRegistrationFormProp
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="lastDonationDate">Last Donation Date *</Label>
+                <Label htmlFor="lastDonationDate">
+                  Last Donation Date *{" "}
+                  <span className="text-xs font-normal text-gray-400">(DD/MM/YYYY)</span>
+                </Label>
                 <Input
                   id="lastDonationDate"
                   type="date"
+                  className="bg-white text-gray-900"
                   {...register("lastDonationDate")}
                 />
                 {errors.lastDonationDate && (
                   <p className="text-sm text-red-600">{errors.lastDonationDate.message}</p>
                 )}
+                <p className="text-xs text-blue-600 bg-blue-50 rounded px-2 py-1">
+                  You will be eligible to donate again after 90 days from your last donation date.
+                </p>
                 <p className="text-xs text-gray-500">
-                  If never donated, enter today&apos;s date
+                  If you have never donated, enter today&apos;s date
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Address */}
+          {/* Work Information */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900">Address</h3>
+            <h3 className="font-semibold text-gray-900">Work Information</h3>
 
-            <div className="space-y-2">
-              <Label htmlFor="address">Street Address *</Label>
-              <Textarea
-                id="address"
-                placeholder="Enter your complete address"
-                rows={2}
-                {...register("address")}
-              />
-              {errors.address && (
-                <p className="text-sm text-red-600">{errors.address.message}</p>
-              )}
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="city">City *</Label>
-                <Input id="city" placeholder="City" {...register("city")} />
-                {errors.city && (
-                  <p className="text-sm text-red-600">{errors.city.message}</p>
+                <Label>Are you an IT Employee? *</Label>
+                <div className="flex flex-col gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setValue("isItEmployee", true)}
+                    className={`w-full py-2 px-3 rounded-lg border-2 text-sm font-medium transition-colors text-left ${
+                      isItEmployeeValue
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                    }`}
+                  >
+                    IT Employee
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setValue("isItEmployee", false)}
+                    className={`w-full py-2 px-3 rounded-lg border-2 text-sm font-medium transition-colors text-left ${
+                      !isItEmployeeValue
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                    }`}
+                  >
+                    Non IT Employee
+                  </button>
+                </div>
+                {errors.isItEmployee && (
+                  <p className="text-sm text-red-600">{errors.isItEmployee.message}</p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="district">District *</Label>
+                <Label htmlFor="companyName">Company Name *</Label>
                 <Input
-                  id="district"
-                  placeholder="District"
-                  {...register("district")}
+                  id="companyName"
+                  placeholder="Enter company name"
+                  className="bg-white text-gray-900"
+                  {...register("companyName")}
                 />
-                {errors.district && (
-                  <p className="text-sm text-red-600">{errors.district.message}</p>
+                {errors.companyName && (
+                  <p className="text-sm text-red-600">{errors.companyName.message}</p>
                 )}
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="state">State *</Label>
-                <Input id="state" placeholder="State" {...register("state")} />
-                {errors.state && (
-                  <p className="text-sm text-red-600">{errors.state.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="pincode">Pincode *</Label>
-                <Input
-                  id="pincode"
-                  placeholder="000000"
-                  maxLength={6}
-                  {...register("pincode")}
-                />
-                {errors.pincode && (
-                  <p className="text-sm text-red-600">{errors.pincode.message}</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Contact Preferences */}
-          <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900">Contact Preferences</h3>
-
-            <div className="space-y-2">
-              <Label>Preferred Contact Method *</Label>
-              <Select<string>
-                defaultValue="PHONE"
-                onValueChange={(value) =>
-                  value && setValue("preferredContactMethod", value as "PHONE" | "WHATSAPP" | "EMAIL")
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="PHONE">Phone Call</SelectItem>
-                  <SelectItem value="WHATSAPP">WhatsApp</SelectItem>
-                  <SelectItem value="EMAIL">Email</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="additionalNotes">Additional Notes</Label>
-              <Textarea
-                id="additionalNotes"
-                placeholder="Any additional information you'd like to share"
-                rows={3}
-                {...register("additionalNotes")}
-              />
             </div>
           </div>
 
           {/* Consent */}
-          <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+          <div className="p-4 bg-gray-50 rounded-lg">
             <div className="flex items-start space-x-3">
               <Checkbox
                 id="consentToContact"
@@ -317,28 +283,17 @@ export function DonorRegistrationForm({ bloodGroups }: DonorRegistrationFormProp
               />
               <div className="space-y-1">
                 <Label htmlFor="consentToContact" className="font-medium cursor-pointer">
-                  I agree to be contacted for blood donation requests *
+                  I am willing to donate blood *
                 </Label>
                 <p className="text-sm text-gray-500">
-                  By checking this box, you consent to be contacted by the NGO
-                  when there is a blood donation requirement matching your
-                  profile.
+                  By checking this box, you confirm your willingness to be contacted
+                  when there is a blood donation requirement matching your profile.
                 </p>
               </div>
             </div>
             {errors.consentToContact && (
-              <p className="text-sm text-red-600">{errors.consentToContact.message}</p>
+              <p className="text-sm text-red-600 mt-2">{errors.consentToContact.message}</p>
             )}
-          </div>
-
-          {/* Disclaimer */}
-          <div className="flex items-start gap-2 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-            <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-amber-800">
-              <strong>Medical Disclaimer:</strong> Final eligibility for blood
-              donation will be determined by qualified healthcare professionals
-              during the screening process.
-            </p>
           </div>
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>

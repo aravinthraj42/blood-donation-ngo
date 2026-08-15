@@ -48,6 +48,60 @@ export async function updateRequestStatus(
   }
 }
 
+export async function updateBloodRequest(
+  requestId: string,
+  data: {
+    firstName: string;
+    lastName: string;
+    age: number;
+    phone: string;
+    bloodGroupId: string;
+    isItEmployee: boolean;
+    companyName: string;
+    reason: string;
+    isUrgent: boolean;
+    willToDonate: boolean;
+  }
+) {
+  try {
+    const session = await requireAdmin();
+
+    const requesterName = `${data.firstName.trim()} ${data.lastName.trim()}`;
+
+    await db
+      .update(bloodRequests)
+      .set({
+        requesterName,
+        contactPhone: data.phone,
+        bloodGroupId: data.bloodGroupId,
+        requesterAge: data.age,
+        requesterIsItEmployee: data.isItEmployee,
+        requesterCompany: data.companyName,
+        reason: data.reason,
+        urgency: data.isUrgent ? "URGENT" : "NORMAL",
+        requesterWillDonate: data.willToDonate,
+        updatedAt: new Date(),
+      })
+      .where(eq(bloodRequests.id, requestId));
+
+    await db.insert(auditLogs).values({
+      adminId: session.admin.id,
+      action: "REQUEST_UPDATED",
+      entityType: "blood_request",
+      entityId: requestId,
+      metadata: { action: "details_updated" },
+    });
+
+    revalidatePath(`/admin/requests/${requestId}`);
+    revalidatePath("/admin/requests");
+    return { success: true };
+  } catch (error) {
+    if (error && typeof error === "object" && "digest" in error) throw error;
+    console.error("Error updating blood request:", error);
+    return { success: false, error: "Failed to update blood request" };
+  }
+}
+
 export async function addRequestNote(requestId: string, note: string) {
   try {
     const session = await requireAdmin();

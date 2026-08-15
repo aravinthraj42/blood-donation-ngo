@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, text, date, boolean, timestamp, index } from "drizzle-orm/pg-core";
+import { pgTable, uuid, varchar, text, date, boolean, integer, timestamp, index } from "drizzle-orm/pg-core";
 import { donorStatusEnum, verificationStatusEnum, contactMethodEnum } from "./enums";
 import { bloodGroups } from "./blood-groups";
 import { adminUsers } from "./admin-users";
@@ -13,14 +13,16 @@ export const donors = pgTable(
     bloodGroupId: uuid("blood_group_id")
       .notNull()
       .references(() => bloodGroups.id),
+    age: integer("age"),
+    isItEmployee: boolean("is_it_employee").notNull().default(false),
     dateOfBirth: date("date_of_birth"),
     lastDonationDate: date("last_donation_date"),
     nextEligibleDate: date("next_eligible_date"),
-    address: text("address").notNull(),
-    city: varchar("city", { length: 100 }).notNull(),
-    district: varchar("district", { length: 100 }).notNull(),
-    state: varchar("state", { length: 100 }).notNull(),
-    pincode: varchar("pincode", { length: 10 }).notNull(),
+    address: text("address"),
+    city: varchar("city", { length: 100 }),
+    district: varchar("district", { length: 100 }),
+    state: varchar("state", { length: 100 }),
+    pincode: varchar("pincode", { length: 10 }),
     occupation: varchar("occupation", { length: 255 }),
     preferredContactMethod: contactMethodEnum("preferred_contact_method").notNull().default("PHONE"),
     consentToContact: boolean("consent_to_contact").notNull().default(false),

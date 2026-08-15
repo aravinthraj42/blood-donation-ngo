@@ -1,53 +1,42 @@
 import { z } from "zod";
 
+const phoneSchema = z
+  .string()
+  .min(1, "Phone number is required")
+  .regex(/^\d{10}$/, "Phone number must be exactly 10 digits")
+  .refine((val) => {
+    const isSequential = val === "1234567890" || val === "0987654321";
+    const isAllSame = /^(\d)\1+$/.test(val);
+    return !isSequential && !isAllSame;
+  }, "Please enter a valid phone number");
+
 export const donorRegistrationSchema = z.object({
-  fullName: z
+  firstName: z
     .string()
-    .min(1, "Full name is required")
-    .min(2, "Name must be at least 2 characters")
-    .max(255, "Name must be less than 255 characters"),
-  phone: z
+    .min(1, "First name is required")
+    .max(100, "First name must be less than 100 characters"),
+  lastName: z
     .string()
-    .min(1, "Phone number is required")
-    .regex(/^[+]?[\d\s-]{10,20}$/, "Please enter a valid phone number"),
-  email: z
-    .string()
-    .email("Please enter a valid email")
-    .optional()
-    .or(z.literal("")),
+    .min(1, "Last name is required")
+    .max(100, "Last name must be less than 100 characters"),
+  age: z
+    .number({ invalid_type_error: "Age is required" })
+    .int("Age must be a whole number")
+    .min(18, "Donor must be at least 18 years old")
+    .max(65, "Donor must be 65 years old or younger"),
   bloodGroupId: z.string().uuid("Please select a blood group"),
-  dateOfBirth: z.string().optional().or(z.literal("")),
-  lastDonationDate: z
-    .string()
-    .min(1, "Last donation date is required"),
-  address: z
-    .string()
-    .min(1, "Address is required")
-    .max(500, "Address must be less than 500 characters"),
-  city: z
-    .string()
-    .min(1, "City is required")
-    .max(100, "City must be less than 100 characters"),
-  district: z
-    .string()
-    .min(1, "District is required")
-    .max(100, "District must be less than 100 characters"),
-  state: z
-    .string()
-    .min(1, "State is required")
-    .max(100, "State must be less than 100 characters"),
-  pincode: z
-    .string()
-    .min(1, "Pincode is required")
-    .regex(/^\d{6}$/, "Please enter a valid 6-digit pincode"),
-  occupation: z.string().max(255).optional().or(z.literal("")),
-  preferredContactMethod: z.enum(["PHONE", "WHATSAPP", "EMAIL"]),
-  additionalNotes: z.string().max(1000).optional().or(z.literal("")),
+  lastDonationDate: z.string().min(1, "Last donation date is required"),
   consentToContact: z
     .boolean()
     .refine((val) => val === true, {
-      message: "You must agree to be contacted for blood donation requests",
+      message: "You must confirm your willingness to donate",
     }),
+  phone: phoneSchema,
+  isItEmployee: z.boolean({ required_error: "Please indicate if you are an IT employee" }),
+  companyName: z
+    .string()
+    .min(1, "Company name is required")
+    .max(255, "Company name must be less than 255 characters"),
 });
 
 export type DonorRegistrationInput = z.infer<typeof donorRegistrationSchema>;

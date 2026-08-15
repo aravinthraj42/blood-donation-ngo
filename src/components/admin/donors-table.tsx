@@ -35,8 +35,8 @@ interface Donor {
   fullName: string;
   phone: string;
   email: string | null;
-  city: string;
-  district: string;
+  city: string | null;
+  district: string | null;
   lastDonationDate: string | null;
   nextEligibleDate: string | null;
   donorStatus: string;
@@ -110,9 +110,8 @@ export function DonorsTable({ donors, pagination }: DonorsTableProps) {
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead>Contact</TableHead>
+                <TableHead>Phone</TableHead>
                 <TableHead>Blood Group</TableHead>
-                <TableHead>Location</TableHead>
                 <TableHead>Last Donation</TableHead>
                 <TableHead>Next Eligible</TableHead>
                 <TableHead>Status</TableHead>
@@ -129,26 +128,11 @@ export function DonorsTable({ donors, pagination }: DonorsTableProps) {
                 return (
                   <TableRow key={donor.id}>
                     <TableCell className="font-medium">{donor.fullName}</TableCell>
-                    <TableCell>
-                      <div className="text-sm">
-                        <p>{donor.phone}</p>
-                        {donor.email && (
-                          <p className="text-gray-500 truncate max-w-[150px]">
-                            {donor.email}
-                          </p>
-                        )}
-                      </div>
-                    </TableCell>
+                    <TableCell className="text-sm">{donor.phone}</TableCell>
                     <TableCell>
                       <Badge variant="outline" className="font-semibold">
                         {donor.bloodGroup?.displayName || "-"}
                       </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-sm">
-                        <p>{donor.city}</p>
-                        <p className="text-gray-500">{donor.district}</p>
-                      </div>
                     </TableCell>
                     <TableCell>
                       {donor.lastDonationDate
@@ -189,7 +173,7 @@ export function DonorsTable({ donors, pagination }: DonorsTableProps) {
                             View Details
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => router.push(`/admin/donors/${donor.id}?edit=true`)}
+                            onClick={() => router.push(`/admin/donors/${donor.id}/edit`)}
                           >
                             <Edit className="w-4 h-4 mr-2" />
                             Edit

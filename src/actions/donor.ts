@@ -34,25 +34,20 @@ export async function registerDonor(data: DonorRegistrationInput): Promise<Donor
 
     const lastDonationDate = parseISO(data.lastDonationDate);
     const nextEligibleDate = addDays(lastDonationDate, intervalDays);
+    const fullName = `${data.firstName.trim()} ${data.lastName.trim()}`;
 
     const [donor] = await db
       .insert(donors)
       .values({
-        fullName: data.fullName,
+        fullName,
         phone: data.phone,
-        email: data.email || null,
+        email: null,
         bloodGroupId: data.bloodGroupId,
-        dateOfBirth: data.dateOfBirth || null,
+        age: data.age,
+        isItEmployee: data.isItEmployee,
         lastDonationDate: data.lastDonationDate,
         nextEligibleDate: nextEligibleDate.toISOString().split("T")[0],
-        address: data.address,
-        city: data.city,
-        district: data.district,
-        state: data.state,
-        pincode: data.pincode,
-        occupation: data.occupation || null,
-        preferredContactMethod: data.preferredContactMethod,
-        additionalNotes: data.additionalNotes || null,
+        occupation: data.companyName,
         consentToContact: data.consentToContact,
         donorStatus: "PENDING",
         verificationStatus: "UNVERIFIED",
@@ -62,7 +57,7 @@ export async function registerDonor(data: DonorRegistrationInput): Promise<Donor
     await db.insert(notifications).values({
       type: "NEW_DONOR",
       title: "New Donor Registration",
-      message: `${data.fullName} has registered as a new donor and is pending verification.`,
+      message: `${fullName} has registered as a new donor and is pending verification.`,
       entityType: "donor",
       entityId: donor.id,
     });

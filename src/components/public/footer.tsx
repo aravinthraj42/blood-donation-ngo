@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Heart, Phone, Mail, MapPin } from "lucide-react";
+import { getAllSettings } from "@/services/public";
+import { DEFAULT_SETTINGS } from "@/config/constants";
 
 const quickLinks = [
   { name: "Home", href: "/" },
@@ -15,7 +17,16 @@ const legalLinks = [
   { name: "Terms of Service", href: "/terms" },
 ];
 
-export function PublicFooter() {
+export async function PublicFooter() {
+  const settings = await getAllSettings();
+
+  const phone = settings.CONTACT_PHONE || DEFAULT_SETTINGS.CONTACT_PHONE;
+  const email = settings.CONTACT_EMAIL || DEFAULT_SETTINGS.CONTACT_EMAIL;
+  const address = settings.ADDRESS || DEFAULT_SETTINGS.ADDRESS;
+  const city = settings.CITY || DEFAULT_SETTINGS.CITY;
+  const state = settings.STATE || DEFAULT_SETTINGS.STATE;
+  const ngoName = settings.NGO_NAME || DEFAULT_SETTINGS.NGO_NAME;
+
   const currentYear = new Date().getFullYear();
 
   return (
@@ -29,7 +40,7 @@ export function PublicFooter() {
                 <Heart className="w-6 h-6 text-white" fill="currentColor" />
               </div>
               <div>
-                <span className="font-bold text-xl text-white">Blood Connect</span>
+                <span className="font-bold text-xl text-white">{ngoName}</span>
                 <span className="text-xs text-gray-400 block -mt-1">InfoPark News Initiate</span>
               </div>
             </Link>
@@ -62,18 +73,28 @@ export function PublicFooter() {
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <Phone className="w-4 h-4 mt-0.5 text-primary" />
-                <span className="text-sm text-gray-400">+91 1234567890</span>
+                <a
+                  href={`tel:${phone.replace(/\s/g, "")}`}
+                  className="text-sm text-gray-400 hover:text-primary transition-colors"
+                >
+                  {phone}
+                </a>
               </li>
               <li className="flex items-start gap-3">
                 <Mail className="w-4 h-4 mt-0.5 text-primary" />
-                <span className="text-sm text-gray-400">contact@bloodconnect.org</span>
+                <a
+                  href={`mailto:${email}`}
+                  className="text-sm text-gray-400 hover:text-primary transition-colors"
+                >
+                  {email}
+                </a>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 mt-0.5 text-primary" />
                 <span className="text-sm text-gray-400">
-                  InfoPark, Kakkanad,
+                  {address},
                   <br />
-                  Kochi, Kerala
+                  {city}, {state}
                 </span>
               </li>
             </ul>
@@ -107,7 +128,7 @@ export function PublicFooter() {
         {/* Bottom bar */}
         <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-gray-500">
-            © {currentYear} Blood Connect – InfoPark News Initiate, Kochi. All rights reserved.
+            © {currentYear} {ngoName} – InfoPark News Initiate, {city}. All rights reserved.
           </p>
           <p className="text-xs text-gray-600">
             Made with <Heart className="w-3 h-3 inline text-primary" fill="currentColor" /> for humanity

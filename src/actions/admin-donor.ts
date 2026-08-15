@@ -1,10 +1,11 @@
 "use server";
 
 import { db } from "@/db";
-import { donors, auditLogs } from "@/db/schema";
+import { donors, auditLogs, settings } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { requireAdmin } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { addDays, parseISO } from "date-fns";
 
 export async function updateDonorStatus(
   donorId: string,
@@ -79,30 +80,48 @@ export async function verifyDonor(donorId: string) {
 export async function updateDonor(
   donorId: string,
   data: {
-    fullName?: string;
-    phone?: string;
-    email?: string | null;
-    bloodGroupId?: string;
-    dateOfBirth?: string | null;
-    lastDonationDate?: string | null;
-    address?: string;
-    city?: string;
-    district?: string;
-    state?: string;
-    pincode?: string;
-    occupation?: string | null;
-    preferredContactMethod?: "PHONE" | "WHATSAPP" | "EMAIL";
-    consentToContact?: boolean;
-    additionalNotes?: string | null;
+    firstName: string;
+    lastName: string;
+    age: number;
+    phone: string;
+    bloodGroupId: string;
+    lastDonationDate: string;
+    isItEmployee: boolean;
+    companyName: string;
+    consentToContact: boolean;
   }
 ) {
   try {
     const session = await requireAdmin();
 
+    const fullName = `${data.firstName.trim()} ${data.lastName.trim()}`;
+
+    const eligibilitySetting = await db
+      .select({ value: settings.value })
+      .from(settings)
+      .where(eq(settings.key, "DONATION_ELIGIBILITY_INTERVAL_DAYS"))
+      .limit(1);
+
+    const intervalDays = eligibilitySetting[0]?.value
+      ? parseInt(eligibilitySetting[0].value, 10)
+      : 90;
+
+    const nextEligibleDate = addDays(parseISO(data.lastDonationDate), intervalDays)
+      .toISOString()
+      .split("T")[0];
+
     await db
       .update(donors)
       .set({
-        ...data,
+        fullName,
+        phone: data.phone,
+        bloodGroupId: data.bloodGroupId,
+        age: data.age,
+        isItEmployee: data.isItEmployee,
+        lastDonationDate: data.lastDonationDate,
+        nextEligibleDate,
+        occupation: data.companyName,
+        consentToContact: data.consentToContact,
         updatedBy: session.admin.id,
         updatedAt: new Date(),
       })

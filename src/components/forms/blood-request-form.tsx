@@ -8,6 +8,8 @@ import { submitBloodRequest } from "@/actions/blood-request";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -16,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Loader2, CheckCircle2, AlertTriangle, Copy } from "lucide-react";
+import { Loader2, CheckCircle2, Copy } from "lucide-react";
 import { toast } from "sonner";
 
 interface BloodGroup {
@@ -27,11 +29,13 @@ interface BloodGroup {
 
 interface BloodRequestFormProps {
   bloodGroups: BloodGroup[];
+  contactPhone?: string;
 }
 
-export function BloodRequestForm({ bloodGroups }: BloodRequestFormProps) {
+export function BloodRequestForm({ bloodGroups, contactPhone = "+91 1234567890" }: BloodRequestFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [referenceNumber, setReferenceNumber] = useState<string | null>(null);
+  const [bgDisplay, setBgDisplay] = useState("");
 
   const {
     register,
@@ -42,12 +46,15 @@ export function BloodRequestForm({ bloodGroups }: BloodRequestFormProps) {
   } = useForm<BloodRequestInput>({
     resolver: zodResolver(bloodRequestSchema),
     defaultValues: {
-      urgency: "NORMAL",
-      unitsRequired: 1,
+      willToDonate: false,
+      isItEmployee: true,
+      isUrgent: false,
     },
   });
 
-  const urgencyValue = watch("urgency");
+  const willToDonateValue = watch("willToDonate");
+  const isItEmployeeValue = watch("isItEmployee");
+  const isUrgentValue = watch("isUrgent");
 
   const onSubmit = async (data: BloodRequestInput) => {
     setIsSubmitting(true);
@@ -109,8 +116,8 @@ export function BloodRequestForm({ bloodGroups }: BloodRequestFormProps) {
 
           <p className="text-sm text-gray-500">
             For urgent assistance, please contact us directly at{" "}
-            <a href="tel:+911234567890" className="text-primary font-medium">
-              +91 1234567890
+            <a href={`tel:${contactPhone.replace(/\s/g, "")}`} className="text-primary font-medium">
+              {contactPhone}
             </a>
           </p>
         </CardContent>
@@ -123,231 +130,217 @@ export function BloodRequestForm({ bloodGroups }: BloodRequestFormProps) {
       <CardHeader>
         <CardTitle>Blood Request Form</CardTitle>
         <CardDescription>
-          Fill out the form below to request blood. Our team will contact you
-          to arrange assistance.
+          All fields are required. Fill out the form below and our team will
+          contact you to arrange assistance.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* Urgency Selection */}
-          <div className="space-y-2">
-            <Label>Urgency Level *</Label>
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { value: "NORMAL", label: "Normal", color: "border-gray-200 bg-gray-50" },
-                { value: "URGENT", label: "Urgent", color: "border-orange-200 bg-orange-50" },
-                { value: "EMERGENCY", label: "Emergency", color: "border-red-200 bg-red-50" },
-              ].map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  onClick={() => setValue("urgency", option.value as "NORMAL" | "URGENT" | "EMERGENCY")}
-                  className={`p-3 rounded-lg border-2 text-center transition-colors ${
-                    urgencyValue === option.value
-                      ? option.value === "EMERGENCY"
-                        ? "border-red-500 bg-red-100"
-                        : option.value === "URGENT"
-                        ? "border-orange-500 bg-orange-100"
-                        : "border-primary bg-primary/10"
-                      : option.color
-                  }`}
-                >
-                  <span className="font-medium">{option.label}</span>
-                </button>
-              ))}
-            </div>
-            {urgencyValue === "EMERGENCY" && (
-              <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0" />
-                <p className="text-sm text-red-800">
-                  For life-threatening emergencies, please also contact the
-                  hospital blood bank and call our emergency line.
-                </p>
-              </div>
-            )}
-          </div>
 
-          {/* Patient Information */}
+          {/* Personal Information */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900">Patient Information</h3>
+            <h3 className="font-semibold text-gray-900">Your Details</h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="patientName">Patient Name *</Label>
+                <Label htmlFor="firstName">First Name *</Label>
                 <Input
-                  id="patientName"
-                  placeholder="Patient's full name"
-                  {...register("patientName")}
+                  id="firstName"
+                  placeholder="Enter first name"
+                  className="bg-white text-gray-900"
+                  {...register("firstName")}
                 />
-                {errors.patientName && (
-                  <p className="text-sm text-red-600">{errors.patientName.message}</p>
+                {errors.firstName && (
+                  <p className="text-sm text-red-600">{errors.firstName.message}</p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="bloodGroupId">Blood Group Required *</Label>
-                <Select<string> onValueChange={(value) => value && setValue("bloodGroupId", value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select blood group" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {bloodGroups.map((bg) => (
-                      <SelectItem key={bg.id} value={bg.id}>
-                        {bg.displayName}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.bloodGroupId && (
-                  <p className="text-sm text-red-600">{errors.bloodGroupId.message}</p>
+                <Label htmlFor="lastName">Last Name *</Label>
+                <Input
+                  id="lastName"
+                  placeholder="Enter last name"
+                  className="bg-white text-gray-900"
+                  {...register("lastName")}
+                />
+                {errors.lastName && (
+                  <p className="text-sm text-red-600">{errors.lastName.message}</p>
                 )}
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="unitsRequired">Units Required *</Label>
+                <Label htmlFor="age">Age *</Label>
                 <Input
-                  id="unitsRequired"
+                  id="age"
                   type="number"
                   min={1}
-                  max={10}
-                  {...register("unitsRequired", { valueAsNumber: true })}
+                  max={120}
+                  placeholder="Enter your age"
+                  className="bg-white text-gray-900"
+                  {...register("age", { valueAsNumber: true })}
                 />
-                {errors.unitsRequired && (
-                  <p className="text-sm text-red-600">{errors.unitsRequired.message}</p>
+                {errors.age && (
+                  <p className="text-sm text-red-600">{errors.age.message}</p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="reason">Reason / Procedure</Label>
+                <Label htmlFor="phone">Phone Number *</Label>
                 <Input
-                  id="reason"
-                  placeholder="e.g., Surgery, Accident, etc."
-                  {...register("reason")}
+                  id="phone"
+                  placeholder="10-digit mobile number"
+                  maxLength={10}
+                  className="bg-white text-gray-900"
+                  {...register("phone")}
                 />
+                {errors.phone && (
+                  <p className="text-sm text-red-600">{errors.phone.message}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Are you an IT Employee? *</Label>
+                <div className="flex flex-col gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setValue("isItEmployee", true)}
+                    className={`w-full py-2 px-3 rounded-lg border-2 text-sm font-medium transition-colors text-left ${
+                      isItEmployeeValue
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                    }`}
+                  >
+                    IT Employee
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setValue("isItEmployee", false)}
+                    className={`w-full py-2 px-3 rounded-lg border-2 text-sm font-medium transition-colors text-left ${
+                      !isItEmployeeValue
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                    }`}
+                  >
+                    Non IT Employee
+                  </button>
+                </div>
+                {errors.isItEmployee && (
+                  <p className="text-sm text-red-600">{errors.isItEmployee.message}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="companyName">Company Name *</Label>
+                <Input
+                  id="companyName"
+                  placeholder="Enter company name"
+                  className="bg-white text-gray-900"
+                  {...register("companyName")}
+                />
+                {errors.companyName && (
+                  <p className="text-sm text-red-600">{errors.companyName.message}</p>
+                )}
               </div>
             </div>
           </div>
 
-          {/* Hospital Information */}
+          {/* Blood Information */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900">Hospital Information</h3>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="hospitalName">Hospital Name *</Label>
-                <Input
-                  id="hospitalName"
-                  placeholder="Hospital name"
-                  {...register("hospitalName")}
-                />
-                {errors.hospitalName && (
-                  <p className="text-sm text-red-600">{errors.hospitalName.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="hospitalLocation">Hospital Location *</Label>
-                <Input
-                  id="hospitalLocation"
-                  placeholder="Address / Area"
-                  {...register("hospitalLocation")}
-                />
-                {errors.hospitalLocation && (
-                  <p className="text-sm text-red-600">{errors.hospitalLocation.message}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="requiredDate">Required Date *</Label>
-                <Input
-                  id="requiredDate"
-                  type="date"
-                  {...register("requiredDate")}
-                />
-                {errors.requiredDate && (
-                  <p className="text-sm text-red-600">{errors.requiredDate.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="requiredTime">Required Time</Label>
-                <Input
-                  id="requiredTime"
-                  type="time"
-                  {...register("requiredTime")}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Contact Information */}
-          <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900">Contact Information</h3>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="requesterName">Your Name *</Label>
-                <Input
-                  id="requesterName"
-                  placeholder="Your full name"
-                  {...register("requesterName")}
-                />
-                {errors.requesterName && (
-                  <p className="text-sm text-red-600">{errors.requesterName.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="contactPhone">Contact Phone *</Label>
-                <Input
-                  id="contactPhone"
-                  placeholder="+91 9876543210"
-                  {...register("contactPhone")}
-                />
-                {errors.contactPhone && (
-                  <p className="text-sm text-red-600">{errors.contactPhone.message}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="alternativeContact">Alternative Contact</Label>
-                <Input
-                  id="alternativeContact"
-                  placeholder="+91 9876543210"
-                  {...register("alternativeContact")}
-                />
-                {errors.alternativeContact && (
-                  <p className="text-sm text-red-600">{errors.alternativeContact.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="pocName">Hospital POC Name</Label>
-                <Input
-                  id="pocName"
-                  placeholder="Point of contact at hospital"
-                  {...register("pocName")}
-                />
-              </div>
-            </div>
+            <h3 className="font-semibold text-gray-900">Blood Information</h3>
 
             <div className="space-y-2">
-              <Label htmlFor="pocPhone">Hospital POC Phone</Label>
-              <Input
-                id="pocPhone"
-                placeholder="+91 9876543210"
-                {...register("pocPhone")}
-              />
-              {errors.pocPhone && (
-                <p className="text-sm text-red-600">{errors.pocPhone.message}</p>
+              <Label>Blood Group Required *</Label>
+              <Select<string>
+                onValueChange={(value) => {
+                  if (!value) return;
+                  setValue("bloodGroupId", value);
+                  setBgDisplay(bloodGroups.find((b) => b.id === value)?.displayName ?? "");
+                }}
+              >
+                <SelectTrigger className="bg-white text-gray-900">
+                  <SelectValue placeholder="Select blood group">
+                    {bgDisplay || undefined}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  {bloodGroups.map((bg) => (
+                    <SelectItem key={bg.id} value={bg.id}>
+                      {bg.displayName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.bloodGroupId && (
+                <p className="text-sm text-red-600">{errors.bloodGroupId.message}</p>
               )}
             </div>
+          </div>
+
+          {/* Request Details */}
+          <div className="space-y-4">
+            <h3 className="font-semibold text-gray-900">Request Details</h3>
+
+            <div className="space-y-2">
+              <Label htmlFor="reason">Reason for Request *</Label>
+              <Textarea
+                id="reason"
+                placeholder="Please describe why blood is needed (e.g., surgery, accident, medical condition)"
+                rows={3}
+                className="bg-white text-gray-900"
+                {...register("reason")}
+              />
+              {errors.reason && (
+                <p className="text-sm text-red-600">{errors.reason.message}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Urgent checkbox */}
+          <div className={`p-4 rounded-lg border-2 transition-colors ${isUrgentValue ? "bg-red-50 border-red-300" : "bg-gray-50 border-gray-200"}`}>
+            <div className="flex items-start space-x-3">
+              <Checkbox
+                id="isUrgent"
+                checked={isUrgentValue ?? false}
+                onCheckedChange={(checked) => setValue("isUrgent", checked === true)}
+              />
+              <div className="space-y-1">
+                <Label htmlFor="isUrgent" className={`font-semibold cursor-pointer ${isUrgentValue ? "text-red-700" : "text-gray-900"}`}>
+                  This is an Urgent / Emergency request
+                </Label>
+                <p className="text-sm text-gray-500">
+                  Check this if blood is needed immediately. This will flag the request as urgent in our system and alert our team right away.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Consent */}
+          <div className="p-4 bg-gray-50 rounded-lg">
+            <div className="flex items-start space-x-3">
+              <Checkbox
+                id="willToDonate"
+                checked={willToDonateValue}
+                onCheckedChange={(checked) =>
+                  setValue("willToDonate", checked === true)
+                }
+              />
+              <div className="space-y-1">
+                <Label htmlFor="willToDonate" className="font-medium cursor-pointer">
+                  I confirm that the above information is accurate and I consent to being contacted regarding this blood request *
+                </Label>
+                <p className="text-sm text-gray-500">
+                  By checking this box, you agree that Blood Connect may contact
+                  you to follow up on this request and coordinate assistance.
+                </p>
+              </div>
+            </div>
+            {errors.willToDonate && (
+              <p className="text-sm text-red-600 mt-2">{errors.willToDonate.message}</p>
+            )}
           </div>
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>

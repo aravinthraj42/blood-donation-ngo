@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Phone, MapPin, Calendar, AlertTriangle, User, Droplet } from "lucide-react";
+import { ArrowLeft, Phone, AlertTriangle, User, Droplet, Edit, Briefcase } from "lucide-react";
 import { RequestNotesForm } from "@/components/admin/request-notes-form";
 
 export const metadata: Metadata = {
@@ -55,10 +55,10 @@ export default async function RequestDetailPage({ params }: RequestDetailPagePro
               <h1 className="text-2xl font-bold text-gray-900">
                 {request.referenceNumber}
               </h1>
-              {request.urgency === "EMERGENCY" && (
-                <Badge className="bg-red-100 text-red-700">
+              {(request.urgency === "EMERGENCY" || request.urgency === "URGENT") && (
+                <Badge className={urgencyColors[request.urgency]}>
                   <AlertTriangle className="w-3 h-3 mr-1" />
-                  EMERGENCY
+                  {request.urgency}
                 </Badge>
               )}
             </div>
@@ -66,12 +66,15 @@ export default async function RequestDetailPage({ params }: RequestDetailPagePro
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Badge className={urgencyColors[request.urgency]}>
-            {request.urgency}
-          </Badge>
           <Badge className={statusColors[request.status]}>
             {request.status.replace("_", " ")}
           </Badge>
+          <Button asChild>
+            <Link href={`/admin/requests/${id}/edit`}>
+              <Edit className="w-4 h-4 mr-2" />
+              Edit Request
+            </Link>
+          </Button>
         </div>
       </div>
 
@@ -79,13 +82,16 @@ export default async function RequestDetailPage({ params }: RequestDetailPagePro
         {/* Main Info */}
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>Request Information</CardTitle>
+            <CardTitle>Requester Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-gray-500">Patient Name</p>
-                <p className="font-medium text-lg">{request.patientName}</p>
+              <div className="flex items-center gap-3">
+                <User className="w-4 h-4 text-gray-400" />
+                <div>
+                  <p className="text-sm text-gray-500">Requester Name</p>
+                  <p className="font-medium text-lg">{request.requesterName}</p>
+                </div>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Blood Group Required</p>
@@ -98,88 +104,70 @@ export default async function RequestDetailPage({ params }: RequestDetailPagePro
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-500">Units Required</p>
-                <p className="font-medium">{request.unitsRequired} units</p>
-              </div>
-              {request.reason && (
-                <div>
-                  <p className="text-sm text-gray-500">Reason</p>
-                  <p className="font-medium">{request.reason}</p>
-                </div>
-              )}
-            </div>
-
-            <Separator />
-
-            <div className="space-y-3">
-              <div className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-gray-400 mt-0.5" />
-                <div>
-                  <p className="font-medium">{request.hospitalName}</p>
-                  <p className="text-gray-500">{request.hospitalLocation}</p>
-                </div>
+                <p className="text-sm text-gray-500">Age</p>
+                <p className="font-medium">{request.requesterAge ?? "-"}</p>
               </div>
               <div className="flex items-center gap-3">
-                <Calendar className="w-4 h-4 text-gray-400" />
-                <span>
-                  Required: {format(new Date(request.requiredDate), "dd MMMM yyyy")}
-                  {request.requiredTime && ` at ${request.requiredTime}`}
-                </span>
+                <Phone className="w-4 h-4 text-gray-400" />
+                <div>
+                  <p className="text-sm text-gray-500">Phone</p>
+                  <a href={`tel:${request.contactPhone}`} className="font-medium text-primary">
+                    {request.contactPhone}
+                  </a>
+                </div>
               </div>
             </div>
 
             <Separator />
 
-            <div>
-              <h3 className="font-semibold mb-3">Contact Information</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center gap-3">
-                  <User className="w-4 h-4 text-gray-400" />
-                  <div>
-                    <p className="text-sm text-gray-500">Requester</p>
-                    <p className="font-medium">{request.requesterName}</p>
-                  </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex items-start gap-3">
+                <Briefcase className="w-4 h-4 text-gray-400 mt-0.5" />
+                <div>
+                  <p className="text-sm text-gray-500">Company</p>
+                  <p className="font-medium">{request.requesterCompany || "-"}</p>
                 </div>
-                <div className="flex items-center gap-3">
-                  <Phone className="w-4 h-4 text-gray-400" />
-                  <div>
-                    <p className="text-sm text-gray-500">Contact</p>
-                    <a
-                      href={`tel:${request.contactPhone}`}
-                      className="font-medium text-primary"
-                    >
-                      {request.contactPhone}
-                    </a>
-                  </div>
-                </div>
-                {request.alternativeContact && (
-                  <div className="flex items-center gap-3">
-                    <Phone className="w-4 h-4 text-gray-400" />
-                    <div>
-                      <p className="text-sm text-gray-500">Alternative</p>
-                      <a
-                        href={`tel:${request.alternativeContact}`}
-                        className="font-medium"
-                      >
-                        {request.alternativeContact}
-                      </a>
-                    </div>
-                  </div>
-                )}
-                {request.pocName && (
-                  <div className="flex items-center gap-3">
-                    <User className="w-4 h-4 text-gray-400" />
-                    <div>
-                      <p className="text-sm text-gray-500">Hospital POC</p>
-                      <p className="font-medium">
-                        {request.pocName}
-                        {request.pocPhone && ` - ${request.pocPhone}`}
-                      </p>
-                    </div>
-                  </div>
-                )}
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">IT Employee</p>
+                <Badge
+                  className={
+                    request.requesterIsItEmployee
+                      ? "bg-blue-100 text-blue-700"
+                      : "bg-gray-100 text-gray-700"
+                  }
+                >
+                  {request.requesterIsItEmployee ? "IT Employee" : "Non IT Employee"}
+                </Badge>
               </div>
             </div>
+
+            <Separator />
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-gray-500">Willing to Donate</p>
+                <p className="font-medium">
+                  {request.requesterWillDonate ? "Yes" : "No"}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Urgency</p>
+                <Badge className={urgencyColors[request.urgency]}>
+                  {request.urgency}
+                </Badge>
+              </div>
+            </div>
+
+            {request.reason && (
+              <>
+                <Separator />
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Reason</p>
+                  <p className="font-medium">{request.reason}</p>
+                </div>
+              </>
+            )}
           </CardContent>
         </Card>
 

@@ -43,6 +43,7 @@ export async function submitBloodRequest(data: BloodRequestInput): Promise<Blood
 
   try {
     const referenceNumber = await generateReferenceNumber();
+    const requesterName = `${data.firstName.trim()} ${data.lastName.trim()}`;
 
     const [bloodGroup] = await db
       .select({ displayName: bloodGroups.displayName })
@@ -54,40 +55,30 @@ export async function submitBloodRequest(data: BloodRequestInput): Promise<Blood
       .insert(bloodRequests)
       .values({
         referenceNumber,
-        requesterName: data.requesterName,
-        patientName: data.patientName,
+        requesterName,
+        patientName: null,
         bloodGroupId: data.bloodGroupId,
-        unitsRequired: data.unitsRequired,
-        reason: data.reason || null,
-        hospitalName: data.hospitalName,
-        hospitalLocation: data.hospitalLocation,
-        requiredDate: data.requiredDate,
-        requiredTime: data.requiredTime || null,
-        contactPhone: data.contactPhone,
-        alternativeContact: data.alternativeContact || null,
-        pocName: data.pocName || null,
-        pocPhone: data.pocPhone || null,
-        urgency: data.urgency,
+        unitsRequired: 1,
+        reason: data.reason,
+        hospitalName: null,
+        hospitalLocation: null,
+        requiredDate: null,
+        contactPhone: data.phone,
+        urgency: data.isUrgent ? "EMERGENCY" : "NORMAL",
         status: "PENDING",
+        requesterAge: data.age,
+        requesterLastDonationDate: null,
+        requesterWillDonate: data.willToDonate,
+        requesterIsItEmployee: data.isItEmployee,
+        requesterCompany: data.companyName,
       })
       .returning({ id: bloodRequests.id });
 
-    const notificationType =
-      data.urgency === "EMERGENCY" || data.urgency === "URGENT"
-        ? "URGENT_BLOOD_REQUEST"
-        : "NEW_BLOOD_REQUEST";
-
-    const urgencyLabel =
-      data.urgency === "EMERGENCY"
-        ? "EMERGENCY"
-        : data.urgency === "URGENT"
-        ? "Urgent"
-        : "New";
-
+    const isUrgent = data.isUrgent === true;
     await db.insert(notifications).values({
-      type: notificationType as "NEW_BLOOD_REQUEST" | "URGENT_BLOOD_REQUEST",
-      title: `${urgencyLabel} Blood Request`,
-      message: `${urgencyLabel} blood request for ${bloodGroup?.displayName || "blood"} at ${data.hospitalName}. Reference: ${referenceNumber}`,
+      type: isUrgent ? "URGENT_BLOOD_REQUEST" : "NEW_BLOOD_REQUEST",
+      title: isUrgent ? "Urgent Blood Request" : "New Blood Request",
+      message: `${isUrgent ? "URGENT: " : ""}Blood request for ${bloodGroup?.displayName || "blood"} submitted by ${requesterName}. Reference: ${referenceNumber}`,
       entityType: "blood_request",
       entityId: request.id,
     });

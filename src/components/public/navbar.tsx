@@ -32,7 +32,7 @@ export function PublicNavbar() {
             </div>
             <div>
               <span className="font-bold text-xl text-gray-900">Blood Connect</span>
-              <span className="text-xs text-gray-500 block -mt-1">InfoPark News Initiate</span>
+              <span className="text-xs font-bold text-primary tracking-wide block mt-0.5">InfoPark News Initiate - Kochi</span>
             </div>
           </Link>
 
@@ -79,17 +79,20 @@ export function PublicNavbar() {
                   <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
                     <Heart className="w-6 h-6 text-white" fill="currentColor" />
                   </div>
-                  <span className="font-bold text-xl">Blood Connect</span>
+                  <div>
+                    <span className="font-bold text-xl text-gray-900 block">Blood Connect</span>
+                    <span className="text-xs font-bold text-primary tracking-wide block mt-0.5">InfoPark News Initiate - Kochi</span>
+                  </div>
                 </div>
 
-                <nav className="flex flex-col gap-1">
+                <nav className="flex flex-col w-full gap-1">
                   {navigation.map((item) => (
                     <Link
                       key={item.name}
                       href={item.href}
                       onClick={() => setMobileMenuOpen(false)}
                       className={cn(
-                        "px-4 py-3 text-base font-medium rounded-lg transition-colors",
+                        "w-full block px-4 py-3 text-base font-medium rounded-lg transition-colors",
                         pathname === item.href
                           ? "text-primary bg-primary/5"
                           : "text-gray-700 hover:text-primary hover:bg-gray-50"
